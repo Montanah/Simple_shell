@@ -7,8 +7,6 @@
  */
 char *input_san(char *old_buf, size_t *old_size)
 {
-	void err_message(char *arg0, char *arg1);
-
 	char *new_buf = malloc(*old_size * 3);
 	char *new_ptr = new_buf;
 	char *old_ptr = old_buf;
@@ -109,4 +107,31 @@ void err_message(char *arg0, char *arg1)
 	write(STDERR_FILENO, ": ", 2);
 	write(STDERR_FILENO, arg0, _strlen(arg0));
 	write(STDERR_FILENO, ": not found\n", 12);
+}
+/**
+ * input_err_check - helper function for sanitizer, check for unexpected char
+ * @ptr: pointer to area that needs to be checked
+ * Return: TRUE if no error, FALSE if error
+ */
+int input_err_check(char *ptr)
+{
+	char *iter = ptr;
+
+	iter++;
+	if (*ptr == ';' && *iter == *ptr)
+	{
+		err_message(ptr, NULL);
+		return (FALSE);
+	}
+	if (*iter == *ptr)
+		iter++;
+	while (*iter == ' ')
+		iter++;
+
+	if (*iter == ';' || *iter == '|' || *iter == '&')
+	{
+		err_message(iter, NULL);
+		return (FALSE);
+	}
+	return (TRUE);
 }
