@@ -62,4 +62,14 @@ int set_alias_value(char *arg, alias *alias_ptr, char *new_value);
 int _setenv(const char *name, const char *value);
 int _unsetenv(const char *name);
 int _atoi(char *s);
+char *str_concat(char *s1, char *s2);
+int built_ins(char **args);
+int and_or(char **args, char operator, int last_compare);
+char *check_command(char **args);
+int execute_command(char **args);
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+char *check_for_vars(char *arg);
+int change_dir(char *name);
+int print_env(void);
+
 #endif
