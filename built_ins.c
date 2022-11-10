@@ -49,3 +49,160 @@ int alias_func(char **args, int to_free)
 	status = 0;
 	return (SKIP_FORK);
 }
+/**
+ * _setenv - sets and environmental variable
+ * @name: name of the variable
+ * @value: value to set the variable to
+ * Return: 0 on success
+ */
+int _setenv(const char *name, const char *value)
+{
+	int status;
+	char **new_environ;
+	char *buffer;
+	char *buf_tmp;
+	char *element_ptr;
+	int len;
+
+	if (value == NULL)
+	{
+		write(STDERR_FILENO, "setenv: no value given\n", 23);
+		status = 2;
+		return (SKIP_FORK);
+	}
+
+	buffer = str_concat((char *)name, "=");
+
+	element_ptr = get_array_element(environ, buffer);
+
+	buf_tmp = str_concat(buffer, (char *)value);
+	free(buffer);
+	buffer = buf_tmp;
+
+	if (element_ptr == NULL)
+	{
+		len = list_len(environ, NULL);
+		new_environ = array_cpy(environ, len + 1);
+		new_environ[len - 1] = buffer;
+		new_environ[len] = NULL;
+		free_array(environ);
+		environ = new_environ;
+		return (SKIP_FORK);
+	}
+
+	len = list_len(environ, (char *)name);
+	free(environ[len]);
+	environ[len] = buffer;
+
+	status = 0;
+
+	return (SKIP_FORK);
+}
+/**
+ * _unsetenv - deletes an environmental variable
+ * @name: name of variable
+ * Return: 0 if successful
+ */
+int _unsetenv(const char *name)
+{
+	int status;
+	char **env_ptr;
+	char *buffer;
+	int len;
+
+	buffer = str_concat((char *)name, "=");
+	len = list_len(environ, buffer);
+	free(buffer);
+
+	if (len == -1)
+	{
+		write(STDERR_FILENO, "unsetenv: variable not found\n", 29);
+		status = 2;
+		return (SKIP_FORK);
+	}
+
+	env_ptr = environ + len;
+	free(*env_ptr);
+	while (*(env_ptr + 1) != NULL)
+	{
+		*env_ptr = *(env_ptr + 1);
+		env_ptr++;
+	}
+	*env_ptr = NULL;
+	status = 0;
+
+	return (SKIP_FORK);
+}
+/**
+ * change_dir - changes the current working directory
+ * @name: name of directory to change to
+ * Return: 0 if successful
+ */
+int change_dir(char *name)
+{
+	int status;
+	char *home;
+	char *pwd;
+	char old_path_buffer[PATH_MAX];
+	char new_path_buffer[PATH_MAX];
+	size_t buf_size = PATH_MAX;
+	int i;
+
+	getcwd(old_path_buffer, buf_size);
+
+	if (name == NULL)
+	{
+		home = get_array_element(environ, "HOME=");
+		if (home == NULL)
+		{
+			status = 2;
+			err_message("cd", name);
+			return (SKIP_FORK);
+		}
+		
+		home += 5;
+		
+		i = chdir((const char *)home);
+		
+		if (i != -1)
+			_setenv("PWD", (const char *)home);
+	}
+	else if (str_compare("-", name, MATCH) == TRUE)
+	{
+		pwd = get_array_element(environ, "OLDPWD=");
+		if (pwd == NULL)
+		{
+			status = 2;
+			err_message("cd", name);
+			return (SKIP_FORK);
+		}
+		
+		pwd += 7;
+		
+		i = chdir((const char *)pwd);
+		
+		if (i != -1)
+		{
+			write(STDOUT_FILENO, pwd, _strlen(pwd));
+			write(STDOUT_FILENO, "\n", 1);
+			_setenv("PWD", (const char *)pwd);
+		}
+	}
+	else if (name != NULL)
+	{
+		i = chdir((const char *)name);
+		if (i != -1)
+			_setenv("PWD", getcwd(new_path_buffer, buf_size));
+	}
+	if (i == -1)
+	{
+		status = 2;
+		err_message("cd", name);
+		return (SKIP_FORK);
+	}
+	
+	status = 0;
+	_setenv("OLDPWD", (const char *)old_path_buffer);
+	
+	return (SKIP_FORK);
+}

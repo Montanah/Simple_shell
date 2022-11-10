@@ -135,3 +135,87 @@ int input_err_check(char *ptr)
 	}
 	return (TRUE);
 }
+/**
+ * check_for_vars - checks an argument to see if it is a variable and if so,
+ * replaces it with it's value
+ * @arg: argument to be checked
+ * Return: a pointer to the evaluated argument (either new or an altered clone)
+ */
+char *check_for_vars(char *arg)
+{
+	int status;
+	char *shell_name;
+	char *clone = NULL;
+	char *ptr = arg;
+	char *next;
+	char *tmp;
+	char *buffer;
+	int is_var;
+	int i;
+
+	while (*ptr != '\0')
+	{
+		if (*ptr == '$')
+		{
+			if (clone == NULL)
+			{
+				clone = _strdup(arg);
+				i = ptr - arg;
+				ptr = clone + i;
+			}
+			next = ptr + 1;
+			while (*next != '\0' && *next != '$' && *next != '#')
+				next++;
+
+			if (*next == '$' && next > ptr + 1)
+				is_var = TRUE;
+			else if (*next == '#')
+				is_var = NEITHER;
+			else
+				is_var = FALSE;
+
+			*next = '\0';
+
+			if (str_compare("$?", ptr, MATCH) == TRUE)
+				tmp = _itoa(status);
+			else if (str_compare("$0", ptr, MATCH) == TRUE)
+				tmp = _strdup(shell_name);
+			else if (get_array_element(environ, ptr + 1) != NULL)
+			{
+				buffer = str_concat(ptr + 1, "=");
+				tmp = _strdup(get_array_element
+						(environ, buffer) + _strlen(buffer));
+				free(buffer);
+			}
+			else
+				tmp = _strdup("");
+			*ptr = '\0';
+			ptr = str_concat(clone, tmp);
+			free(tmp);
+			if (is_var == FALSE)
+			{
+				free(clone);
+				clone = ptr;
+				break;
+			}
+			if (is_var == TRUE)
+				*next = '$';
+			else if (is_var == NEITHER)
+				*next = '#';
+			tmp = str_concat(ptr, next);
+			free(ptr);
+			ptr = tmp;
+			free(clone);
+			clone = ptr;
+			if (is_var == NEITHER)
+			{
+				while (*ptr != '#')
+					ptr++;
+			}
+		}
+		ptr++;
+	}
+	if (clone != NULL)
+		return (clone);
+	return (arg);
+}

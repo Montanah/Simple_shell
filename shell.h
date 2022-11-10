@@ -59,5 +59,7 @@ int check_if_alias(char **args, alias *alias_ptr);
 int print_aliases(alias *alias_ptr);
 int print_alias_value(char *arg, alias *alias_ptr);
 int set_alias_value(char *arg, alias *alias_ptr, char *new_value);
-
+int _setenv(const char *name, const char *value);
+int _unsetenv(const char *name);
+int _atoi(char *s);
 #endif
