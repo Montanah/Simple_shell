@@ -1,4 +1,3 @@
-#include "shell.c"
 #include "shell.h"
 /**
  * ayto - checks if the chracter is the delimeter (Are You The One)
