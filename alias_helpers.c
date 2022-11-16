@@ -19,11 +19,11 @@ int free_aliases(alias *alias_ptr)
 	return (TRUE);
 }
 /**
- * check_if_alias - if the alias command is not called, this will check if the
+*check_if_alias - if the alias command is not called, this will check if the
  * command is an alias, and if so replace it with it's value
  * @args: argument to be checked
  * @alias_ptr: points to list of aliases to be checked against
- * Retrun: TRUE
+ * Return: TRUE
  */
 int check_if_alias(char **args, alias *alias_ptr)
 {
@@ -49,8 +49,7 @@ int print_aliases(alias *alias_ptr)
 	{
 		write(STDOUT_FILENO, alias_ptr->name, _strlen(alias_ptr->name));
 		write(STDOUT_FILENO, "=\'", 2);
-		write(STDOUT_FILENO, alias_ptr->value,
-			       	_strlen(alias_ptr->value));
+		write(STDOUT_FILENO, alias_ptr->value, _strlen(alias_ptr->value));
 		write(STDOUT_FILENO, "\'\n", 2);
 		alias_ptr = alias_ptr->next;
 	}
