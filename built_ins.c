@@ -141,15 +141,14 @@ int _unsetenv(const char *name)
 int change_dir(char *name)
 {
 	int status, i;
-	char *home, *pwd;
-	char old_path_buffer[PATH_MAX], new_path_buffer[PATH_MAX];
+	char *home, *pwd, old_p_buffer[PATH_MAX], new_path_buffer[PATH_MAX];
 	size_t buf_size = PATH_MAX;
 
-	getcwd(path_buffer, buf_size);
+	pwd = getcwd(old_p_buffer, buf_size);
 	if (name == NULL || str_compare("~", name, PREFIX) == TRUE
 			|| str_compare("$HOME", name, MATCH) == TRUE)
 	{
-		if ((name != NULL && *name == '~' && *(name + 1) != '\0'
+		if (name != NULL && *name == '~' && *(name + 1) != '\0'
 					&& *(name + 1) != '/')
 			{
 				status = 2;
@@ -197,7 +196,7 @@ int change_dir(char *name)
 		return (SKIP_FORK);
 	}
 	status = 0;
-	_setenv("OLDPWD", (const char *)path_buffer);
+	_setenv("OLDPWD", (const char *)old_p_buffer);
 	return (SKIP_FORK);
 }
 /**

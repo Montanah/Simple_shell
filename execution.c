@@ -84,13 +84,12 @@ int and_or(char **args, char operator, int last_compare)
  */
 int execute_command(char **args)
 {
-	char *buf_ptr = *args, *command_name;
+	char *buf_ptr = *args, *command_name = check_command(args);
 	pid_t pid;
 	int status, what_do = built_ins(args);
 
 	if (what_do == DO_EXECVE)
 	{
-		command_name = check_command(args);
 		if (command_name == NULL)
 			return (FALSE);
 		pid = fork();
@@ -208,13 +207,12 @@ char *check_command(char **args)
 			{
 				free(path_str);
 				return (command_buf);
-			} else
-			{
+			} 
 				free(command_buf);
 				path_ptr = _strdup(path_str + 1);
 				free(path_str);
 				path_str = path_ptr;
-			}
+			
 		}
 		while (*path_ptr != '\0')
 		{

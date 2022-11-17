@@ -49,8 +49,7 @@ int print_aliases(alias *alias_ptr)
 	{
 		write(STDOUT_FILENO, alias_ptr->name, _strlen(alias_ptr->name));
 		write(STDOUT_FILENO, "=\'", 2);
-		write(STDOUT_FILENO, alias_ptr->value
-				_strlen(alias_ptr->value));
+		write(STDOUT_FILENO, alias_ptr->value, _strlen(alias_ptr->value));
 		write(STDOUT_FILENO, "\'\n", 2);
 		alias_ptr = alias_ptr->next;
 	}
@@ -64,8 +63,6 @@ int print_aliases(alias *alias_ptr)
  */
 int print_alias_value(char *arg, alias *alias_ptr)
 {
-	int status;
-
 	while (alias_ptr != NULL)
 	{
 		fflush(stdin);
