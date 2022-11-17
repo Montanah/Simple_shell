@@ -63,6 +63,8 @@ int print_aliases(alias *alias_ptr)
  */
 int print_alias_value(char *arg, alias *alias_ptr)
 {
+	int status;
+
 	while (alias_ptr != NULL)
 	{
 		fflush(stdin);
