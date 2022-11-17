@@ -38,11 +38,9 @@ char **make_array(char *str, char delim, char **if_sep)
 			i++;
 		str_ptr++;
 	}
-
 	array = malloc(i * sizeof(char **));
 	if (array == NULL)
 		exit(EXIT_FAILURE);
-
 	array[0] = str;
 	str_ptr = str;
 	i = 1;
@@ -65,11 +63,8 @@ char **make_array(char *str, char delim, char **if_sep)
 				array[i] = str_ptr;
 				i++;
 			}
-		}
-		str_ptr++;
-	}
-	array[i] = NULL;
-	
+		} str_ptr++;
+	} array[i] = NULL;
 	return (array);
 }
 /**

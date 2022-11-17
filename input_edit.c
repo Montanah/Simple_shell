@@ -7,9 +7,7 @@
  */
 char *input_san(char *old_buf, size_t *old_size)
 {
-	char *new_buf = malloc(*old_size * 3);
-	char *new_ptr = new_buf;
-	char *old_ptr = old_buf;
+	char *new_buf = malloc(*old_size * 3), *new_ptr = new_buf, *old_ptr = old_buf;
 
 	while (*old_ptr != '\0')
 	{
@@ -29,7 +27,6 @@ char *input_san(char *old_buf, size_t *old_size)
 			*new_ptr = ' ';
 			new_ptr++;
 		}
-
 		if (*old_ptr == ';' || *old_ptr == '|' || *old_ptr == '&')
 		{
 			if (input_err_check(old_ptr) == FALSE)
@@ -72,27 +69,30 @@ char *input_san(char *old_buf, size_t *old_size)
  */
 void err_message(char *arg0, char *arg1)
 {
-	int status;
-	int line_num;
-	char *shell_name;
-
-	char *err_str_num = _itoa(line_num);
+	int status, line_num;
+	char *shell_name, *err_str_num = _itoa(line_num);
 
 	write(STDERR_FILENO, shell_name, _strlen(shell_name));
 	write(STDERR_FILENO, ": ", 2);
 	write(STDERR_FILENO, err_str_num, _strlen(err_str_num));
 	free(err_str_num);
 
-	if (str_compare("exit", arg0, MATCH) == TRUE)
+	if (str_compare("cd", arg0, MATCH) == TRUE)
 	{
 		status = 2;
-		write(STDERR_FILENO, ": cd: can't cd to ", 18);
+		write(STDERR_FILENO, ": cd: can't cd to", 17);
 		write(STDERR_FILENO, arg1, _strlen(arg1));
 		write(STDERR_FILENO, "\n", 1);
 		return;
 	}
-
 	if (str_compare("exit", arg0, MATCH) == TRUE)
+	{
+		write(STDERR_FILENO, ": exit: Illegal number: ", 24);
+		write(STDERR_FILENO, arg1, _strlen(arg1));
+		write(STDERR_FILENO, "\n", 1);
+		return;
+	}
+	if (*arg0 == ';' || *arg0 == '|' || *arg0 == '&')
 	{
 		status = 2;
 		write(STDERR_FILENO, ": Syntax error: \"", 17);
@@ -143,15 +143,8 @@ int input_err_check(char *ptr)
  */
 char *check_for_vars(char *arg)
 {
-	int status;
-	char *shell_name;
-	char *clone = NULL;
-	char *ptr = arg;
-	char *next;
-	char *tmp;
-	char *buffer;
-	int is_var;
-	int i;
+	int status, is_var, i;
+	char *shell_name, *clone = NULL, *ptr = arg, *next, *tmp, *buffer;
 
 	while (*ptr != '\0')
 	{
@@ -166,16 +159,13 @@ char *check_for_vars(char *arg)
 			next = ptr + 1;
 			while (*next != '\0' && *next != '$' && *next != '#')
 				next++;
-
 			if (*next == '$' && next > ptr + 1)
 				is_var = TRUE;
 			else if (*next == '#')
 				is_var = NEITHER;
 			else
 				is_var = FALSE;
-
 			*next = '\0';
-
 			if (str_compare("$?", ptr, MATCH) == TRUE)
 				tmp = _itoa(status);
 			else if (str_compare("$0", ptr, MATCH) == TRUE)

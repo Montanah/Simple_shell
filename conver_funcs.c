@@ -6,11 +6,8 @@
  */
 char *_itoa(int n)
 {
-	char *buf = malloc(12);
-	char *ptr = buf;
-	int is_min = FALSE;
-	int i_mask = 1000000000;
-	int digit = 0;
+	char *buf = malloc(12), *ptr = buf;
+	int is_min = FALSE, i_mask = 1000000000, digit = 0;
 
 	if (n == INT_MIN)
 	{
@@ -35,8 +32,7 @@ char *_itoa(int n)
 	{
 		*ptr = digit + '0';
 		ptr++;
-	}
-	while (i_mask > 9)
+	} while (i_mask > 9)
 	{
 		digit = n / i_mask;
 		*ptr = digit + '0';
@@ -46,7 +42,6 @@ char *_itoa(int n)
 	}
 	if (is_min == TRUE)
 		n += 1;
-
 	*ptr = n + '0';
 	ptr++;
 	*ptr = '\0';

@@ -140,55 +140,51 @@ int _unsetenv(const char *name)
  */
 int change_dir(char *name)
 {
-	int status;
-	char *home;
-	char *pwd;
-	char old_path_buffer[PATH_MAX];
-	char new_path_buffer[PATH_MAX];
+	int status, i;
+	char *home, *pwd;
+	char old_path_buffer[PATH_MAX], new_path_buffer[PATH_MAX];
 	size_t buf_size = PATH_MAX;
-	int i;
 
-	getcwd(old_path_buffer, buf_size);
-
-	if (name == NULL)
+	getcwd(path_buffer, buf_size);
+	if (name == NULL || str_compare("~", name, PREFIX) == TRUE
+			|| str_compare("$HOME", name, MATCH) == TRUE)
 	{
+		if ((name != NULL && *name == '~' && *(name + 1) != '\0'
+					&& *(name + 1) != '/')
+			{
+				status = 2;
+				err_message("cd", name);
+				return (SKIP_FORK);
+			}
 		home = get_array_element(environ, "HOME=");
 		if (home == NULL)
 		{
 			status = 2;
 			err_message("cd", name);
 			return (SKIP_FORK);
-		}
-		
-		home += 5;
-		
+		} while (*home != '=')
+			home++;
 		i = chdir((const char *)home);
-		
 		if (i != -1)
 			_setenv("PWD", (const char *)home);
-	}
-	else if (str_compare("-", name, MATCH) == TRUE)
+		if (name != NULL && *(name + 1) != '\0' && *(name + 2) != '\0')
+			name += 2;
+	} else if (str_compare("-", name, MATCH) == TRUE)
 	{
 		pwd = get_array_element(environ, "OLDPWD=");
 		if (pwd == NULL)
-		{
-			status = 2;
-			err_message("cd", name);
-			return (SKIP_FORK);
-		}
-		
-		pwd += 7;
-		
+			return (2);
+		while (*pwd != '=')
+			pwd++;
+
 		i = chdir((const char *)pwd);
-		
 		if (i != -1)
 		{
 			write(STDOUT_FILENO, pwd, _strlen(pwd));
 			write(STDOUT_FILENO, "\n", 1);
 			_setenv("PWD", (const char *)pwd);
 		}
-	}
-	else if (name != NULL)
+	} else if (name != NULL)
 	{
 		i = chdir((const char *)name);
 		if (i != -1)
@@ -200,10 +196,8 @@ int change_dir(char *name)
 		err_message("cd", name);
 		return (SKIP_FORK);
 	}
-	
 	status = 0;
-	_setenv("OLDPWD", (const char *)old_path_buffer);
-	
+	_setenv("OLDPWD", (const char *)path_buffer);
 	return (SKIP_FORK);
 }
 /**
