@@ -10,7 +10,7 @@ int shell_num_builtins()
 void sh_cd(char **name)
 {
 	if(name[1] == NULL)
-		_puts(stderr, "shell: cd missing argument\n");
+		puts(stderr, "shell: cd missing argument\n");
 	else
 	{
 		if (chdir(name[1]) != 0)
@@ -41,3 +41,4 @@ void sh_exec(char **args) {
     } else {
         perror("kash");
     }
+}

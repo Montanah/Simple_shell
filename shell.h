@@ -76,7 +76,7 @@ char *check_command(char **args);
 int execute_command(char **args);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char *check_for_vars(char *arg);
-int change_dir(char **name);
+int change_dir(char *name);
 int print_env(void);
 char *_strtok(char *input, const char *delim);
 int ayto(char z, const char *delim);
