@@ -138,7 +138,7 @@ int _unsetenv(const char *name)
  * @name: name of directory to change to
  * Return: 0 if successful
  */
-int change_dir(char **name)
+int change_dir(char *name)
 {
 	
 }
