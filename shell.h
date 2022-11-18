@@ -11,6 +11,8 @@
 #include <string.h>
 #include <limits.h>
 #include <signal.h>
+#include <stddef.h>
+#include <stdbool.h>
 
 #define FALSE 0
 #define TRUE 1
@@ -33,6 +35,11 @@ typedef struct Alias
 	char *value;
 	struct Alias *next;
 } alias;
+
+struct buitin {
+	char *name;
+	void (*func)(char **args);
+};
 
 extern char *shell_name;
 extern int status;
@@ -69,9 +76,11 @@ char *check_command(char **args);
 int execute_command(char **args);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char *check_for_vars(char *arg);
-int change_dir(char *name);
+int change_dir(char **name);
 int print_env(void);
 char *_strtok(char *input, const char *delim);
 int ayto(char z, const char *delim);
+void sh_exec(char **args);
+int shell_num_builtins();
 
 #endif
