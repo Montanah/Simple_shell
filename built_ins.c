@@ -140,15 +140,7 @@ int _unsetenv(const char *name)
  */
 int change_dir(char **name)
 {
-	if(name[1] == NULL)
-		_puts(stderr, "shell: cd missing argument\n");
-	else
-	{
-		if (chdir(name[1]) != 0)
-		{
-			perror("shell: cd");
-		}		
-	}
+	
 }
 /**
  * print_env - prints the environment

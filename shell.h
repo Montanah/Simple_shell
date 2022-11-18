@@ -82,5 +82,5 @@ char *_strtok(char *input, const char *delim);
 int ayto(char z, const char *delim);
 void sh_exec(char **args);
 int shell_num_builtins();
-
+void sh_cd(char **name);
 #endif

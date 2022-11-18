@@ -1,11 +1,23 @@
 #include "shell.h"
 
 struct buitin b[] = {
-	{"cd", change_dir},
+	{"cd", sh_cd},
 };
 int shell_num_builtins()
 {
     return sizeof(b) / sizeof(struct buitin);
+}
+void sh_cd(char **name)
+{
+	if(name[1] == NULL)
+		_puts(stderr, "shell: cd missing argument\n");
+	else
+	{
+		if (chdir(name[1]) != 0)
+		{
+			perror("shell: cd");
+		}		
+	}
 }
 void sh_exec(char **args) {
     for (int i = 0; i < shell_num_builtins(); i++) {
