@@ -177,8 +177,10 @@ int built_ins(char **args)
 	else if (str_compare("unsetenv", *args, MATCH) == TRUE
 			&& args[1] != NULL)
 		return (_unsetenv(args[1]));
-	else if (str_compare("cd", *args, MATCH) == TRUE)
-		return (change_dir(args[1]));
+	/**
+	 * else if (str_compare("cd", *args, MATCH) == TRUE)
+	 * 		return (change_dir(args[1]));
+	 */
 	else if (str_compare("env", *args, MATCH) == TRUE)
 		return (print_env());
 	return (DO_EXECVE);
