@@ -134,7 +134,7 @@ int execute_command(char **args)
 int built_ins(char **args)
 {
 	int status, i;
-	char **args_ptr = args;
+	char **args_ptr = args, *shell_name;
 
 	while (*args_ptr != NULL)
 	{
